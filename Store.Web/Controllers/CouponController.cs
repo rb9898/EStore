@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Store.Services.CouponAPI.Models.Dto;
 using Store.Web.Models;
 using Store.Web.Service.IService;
 

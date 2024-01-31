@@ -1,5 +1,4 @@
-﻿using Store.Services.CouponAPI.Models.Dto;
-using Store.Web.Models;
+﻿using Store.Web.Models;
 using Store.Web.Service.IService;
 
 namespace Store.Web.Service
