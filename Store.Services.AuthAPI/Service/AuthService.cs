@@ -11,12 +11,29 @@ namespace Store.Services.AuthAPI.Service
         private readonly AppDbContext _appDbContext;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-        public AuthService(AppDbContext appDbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AuthService(AppDbContext appDbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator)
         {
             _appDbContext = appDbContext;
             _userManager = userManager;
             _roleManager = roleManager;
+            _jwtTokenGenerator = jwtTokenGenerator;
+        }
+
+        public async Task<bool> AssignRole(string email, string roleName)
+        {
+            var user = _appDbContext.ApplicationUsers.FirstOrDefault(u => u.Email.ToLower() == email.ToLower());
+            if(user != null)
+            {
+                if(!_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult()) 
+                {
+                    _roleManager.CreateAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();
+                }
+                await _userManager.AddToRoleAsync(user, roleName);
+                return true;
+            }
+            return false;
         }
 
         public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
@@ -31,6 +48,7 @@ namespace Store.Services.AuthAPI.Service
                     Token = ""
                 };
             }
+            var token = _jwtTokenGenerator.GenerateToken(user);
             UserDto userDto = new UserDto()
             {
                 Id = user.Id,
@@ -41,7 +59,7 @@ namespace Store.Services.AuthAPI.Service
             return new LoginResponseDto()
             {
                 User = userDto,
-                Token = ""
+                Token = token
             };
         }
 
