@@ -18,7 +18,7 @@ namespace Store.Web.Service
                 ApiType = Utility.SD.ApiType.POST,
                 Data = assignRoleRequestDto,
                 Url = Utility.SD.AuthAPIBase + "/api/auth/AssignRole"
-            });
+            },withBearer: false);
         }
 
         public async Task<ResponseDto?> LoginAsync(LoginRequestDto loginRequestDto)
@@ -28,7 +28,7 @@ namespace Store.Web.Service
                 ApiType = Utility.SD.ApiType.POST,
                 Data = loginRequestDto,
                 Url = Utility.SD.AuthAPIBase + "/api/auth/login"
-            });
+            },withBearer:false);
         }
 
         public async Task<ResponseDto?> RegisterAsync(RegistrationRequestDto registrationRequestDto)
@@ -38,7 +38,7 @@ namespace Store.Web.Service
                 ApiType = Utility.SD.ApiType.POST,
                 Data = registrationRequestDto,
                 Url = Utility.SD.AuthAPIBase + "/api/auth/register"
-            });
+            },withBearer:false);
         }
     }
 }
