@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Store.Services.ShoppingCartAPI.Data;
 using Store.Services.ShoppingCartAPI.Models;
 using Store.Services.ShoppingCartAPI.Models.Dto;
+using Store.Services.ShoppingCartAPI.Service.Iservice;
 using System.Reflection.PortableExecutable;
 
 namespace Store.Services.ShoppingCartAPI.Controllers
@@ -16,12 +17,70 @@ namespace Store.Services.ShoppingCartAPI.Controllers
         private IMapper _mapper;
         private ResponseDto _responseDto;
         private AppDbContext _appDbContext;
+        private IProductService _productService;
+        private ICouponService _couponService;
 
-        public CartAPIController(IMapper mapper, AppDbContext appDbContext)
+        public CartAPIController(IMapper mapper, AppDbContext appDbContext, IProductService productService, ICouponService couponService)
         {
             _mapper = mapper;
             _responseDto = new ResponseDto();
             _appDbContext = appDbContext;
+            _productService = productService;
+            _couponService = couponService;
+        }
+
+        [HttpGet("GetCart/{userId}")]
+        public async Task<ResponseDto> GetCart(string userId)
+        {
+            try
+            {
+                CartDto cart = new()
+                {
+                    CartHeader = _mapper.Map<CartHeaderDto>(_appDbContext.CartHeaders.First(u => u.UserId == userId))
+                };
+                cart.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(_appDbContext.CartDetails.Where(u=>u.CartHeaderId==cart.CartHeader.CartHeaderId));
+                IEnumerable<ProductDto> products = await _productService.GetProducts();
+                foreach (var item in cart.CartDetails)
+                {
+                    item.Product = products.FirstOrDefault(u => u.ProductId == item.ProductId);
+                    cart.CartHeader.CartTotal += item.Count * item.Product.Price;
+                }
+                if (!string.IsNullOrEmpty(cart.CartHeader.CouponCode))
+                {
+                    CouponDto coupon = await _couponService.GetCoupon(cart.CartHeader.CouponCode);
+                    if(coupon !=null && cart.CartHeader.CartTotal > coupon.MinAmount)
+                    {
+                        cart.CartHeader.CartTotal -= coupon.DiscountAmount;
+                        cart.CartHeader.Discount = coupon.DiscountAmount;
+                    }
+                }
+                _responseDto.Result = cart;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+            return _responseDto;
+        }
+
+        [HttpPost("ApplyCoupon")]
+        public async Task<ResponseDto> ApplyCoupon(CartDto cartDto)
+        {
+            try
+            {
+                CartHeader cartHeader = await _appDbContext.CartHeaders.FirstAsync(u => u.UserId == cartDto.CartHeader.UserId);
+                cartHeader.CouponCode = cartDto.CartHeader.CouponCode;
+                _appDbContext.CartHeaders.Update(cartHeader);
+                await _appDbContext.SaveChangesAsync();
+                _responseDto.Result = true;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+            return _responseDto;
         }
 
         [HttpPost("CartUpsert")]
