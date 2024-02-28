@@ -22,6 +22,40 @@ namespace Store.Web.Controllers
             return View(await LoadCartBasedOnLoggedInUser());
         }
 
+        public async Task<IActionResult> Remove(int cartDetailsId)
+        {
+            ResponseDto responseDto = await _cartService.RemoveFromCartAsync(cartDetailsId);
+            if(responseDto != null && responseDto.IsSuccess)
+            {
+                TempData["success"] = "Item removed successfully";
+                return RedirectToAction(nameof(CartIndex));
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> ApplyCoupon(CartDto cartDto)
+        {
+            ResponseDto responseDto = await _cartService.ApplyCouponAsync(cartDto);
+            if (responseDto != null && responseDto.IsSuccess)
+            {
+                TempData["success"] = "Coupon applied successfully";
+                return RedirectToAction(nameof(CartIndex));
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
+        {
+            cartDto.CartHeader.CouponCode = "";
+            ResponseDto responseDto = await _cartService.ApplyCouponAsync(cartDto);
+            if (responseDto != null && responseDto.IsSuccess)
+            {
+                TempData["success"] = "Coupon removed successfully";
+                return RedirectToAction(nameof(CartIndex));
+            }
+            return View();
+        }
+
         private async Task<CartDto> LoadCartBasedOnLoggedInUser()
         {
             string? userId = User.Claims.First(u => u.Type == JwtRegisteredClaimNames.Sub)?.Value;
