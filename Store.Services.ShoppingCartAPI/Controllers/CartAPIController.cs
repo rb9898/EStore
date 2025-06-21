@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace Store.Services.ShoppingCartAPI.Controllers
 {
     [Route("api/cart")]
     [ApiController]
+    [Authorize]
     public class CartAPIController : ControllerBase
     {
         private IMapper _mapper;

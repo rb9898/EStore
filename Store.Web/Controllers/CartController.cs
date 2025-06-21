@@ -33,6 +33,7 @@ namespace Store.Web.Controllers
             return View();
         }
 
+        [HttpPost]
         public async Task<IActionResult> ApplyCoupon(CartDto cartDto)
         {
             ResponseDto responseDto = await _cartService.ApplyCouponAsync(cartDto);
@@ -44,6 +45,7 @@ namespace Store.Web.Controllers
             return View();
         }
 
+        [HttpPost]
         public async Task<IActionResult> EmailCart(CartDto cartDto)
         {
             CartDto cart = await LoadCartBasedOnLoggedInUser();
@@ -54,9 +56,10 @@ namespace Store.Web.Controllers
                 TempData["success"] = "Email will be processed and sent shortly";
                 return RedirectToAction(nameof(CartIndex));
             }
-            return View();
+            return View(nameof(CartIndex));
         }
 
+        [HttpPost]
         public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
         {
             cartDto.CartHeader.CouponCode = "";
