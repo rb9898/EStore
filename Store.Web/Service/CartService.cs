@@ -23,6 +23,16 @@ namespace Store.Web.Service
             });
         }
 
+        public async Task<ResponseDto> EmailCartAsync(CartDto cartDto)
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = cartDto,
+                Url = SD.ShoppingCartAPIBase + "/api/cart/EmailCart"
+            });
+        }
+
         public async Task<ResponseDto?> GetCartByUserId(string userId)
         {
             return await _baseService.SendAsync(new RequestDto()

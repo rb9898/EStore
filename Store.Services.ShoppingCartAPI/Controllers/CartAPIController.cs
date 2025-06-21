@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Store.MessageBus;
 using Store.Services.ShoppingCartAPI.Data;
 using Store.Services.ShoppingCartAPI.Models;
 using Store.Services.ShoppingCartAPI.Models.Dto;
@@ -19,14 +20,18 @@ namespace Store.Services.ShoppingCartAPI.Controllers
         private AppDbContext _appDbContext;
         private IProductService _productService;
         private ICouponService _couponService;
+        private IMessageBus _messageBus;
+        private IConfiguration _configuration;
 
-        public CartAPIController(IMapper mapper, AppDbContext appDbContext, IProductService productService, ICouponService couponService)
+        public CartAPIController(IMapper mapper, AppDbContext appDbContext, IProductService productService, ICouponService couponService, IMessageBus messageBus, IConfiguration configuration)
         {
             _mapper = mapper;
             _responseDto = new ResponseDto();
             _appDbContext = appDbContext;
             _productService = productService;
             _couponService = couponService;
+            _messageBus = messageBus;
+            _configuration = configuration;
         }
 
         [HttpGet("GetCart/{userId}")]
@@ -147,6 +152,22 @@ namespace Store.Services.ShoppingCartAPI.Controllers
             {
                 _responseDto.Message = ex.Message.ToString();
                 _responseDto.IsSuccess = false;
+            }
+            return _responseDto;
+        }
+
+        [HttpPost("EmailCart")]
+        public async Task<ResponseDto> EmailCart(CartDto cartDto)
+        {
+            try
+            {
+                await _messageBus.PublishMessage(cartDto, _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCart"));
+                _responseDto.Result = true;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
             }
             return _responseDto;
         }
