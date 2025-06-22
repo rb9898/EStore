@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store.MessageBus", "Store.M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store.Services.EmailAPI", "Store.Services.EmailAPI\Store.Services.EmailAPI.csproj", "{6CFB7151-A165-4319-AFF4-A30412AEB2FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store.Services.OrderAPI", "Store.Services.OrderAPI\Store.Services.OrderAPI.csproj", "{F89A9385-C0C0-4497-99E5-30ED0D1B52F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{6CFB7151-A165-4319-AFF4-A30412AEB2FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CFB7151-A165-4319-AFF4-A30412AEB2FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CFB7151-A165-4319-AFF4-A30412AEB2FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F89A9385-C0C0-4497-99E5-30ED0D1B52F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F89A9385-C0C0-4497-99E5-30ED0D1B52F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F89A9385-C0C0-4497-99E5-30ED0D1B52F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F89A9385-C0C0-4497-99E5-30ED0D1B52F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +77,7 @@ Global
 		{18AE7829-B07D-44B5-885C-70ADA64BB71C} = {6BA1AFCF-02E8-4E92-9E09-AF3CA2AD8EFE}
 		{974350E1-3524-4BDC-97F1-B88FA44D0F1E} = {0D522BDE-28B2-4E33-BF49-3F03EEC85966}
 		{6CFB7151-A165-4319-AFF4-A30412AEB2FF} = {6BA1AFCF-02E8-4E92-9E09-AF3CA2AD8EFE}
+		{F89A9385-C0C0-4497-99E5-30ED0D1B52F5} = {6BA1AFCF-02E8-4E92-9E09-AF3CA2AD8EFE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2F69827F-11DB-499B-B93A-ACC8EAE06427}
