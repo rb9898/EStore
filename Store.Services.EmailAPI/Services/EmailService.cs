@@ -3,6 +3,7 @@ using Store.Services.EmailAPI.Models;
 using Store.Services.EmailAPI.Models.Dto;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
+using Store.Services.EmailAPI.Message;
 
 namespace Store.Services.EmailAPI.Services
 {
@@ -32,6 +33,12 @@ namespace Store.Services.EmailAPI.Services
             message.Append("</ul>");
 
             await LogAndEmail(message.ToString(), cartDto.CartHeader.Email);
+        }
+
+        public async Task LogOrderPlaced(RewardsMessage rewardsDto)
+        {
+            string message = "New Order Placed. <br/> Order ID : " + rewardsDto.OrderId;
+            await LogAndEmail(message, "dotnetmastery@gmail.com");
         }
 
         public async Task RegisterUserEmailAndLog(string email)
