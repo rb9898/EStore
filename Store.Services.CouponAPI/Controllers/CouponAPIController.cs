@@ -79,6 +79,15 @@ namespace Store.Services.CouponAPI.Controllers
                 Coupon obj = _mapper.Map<Coupon>(couponDto);
                 _appDbContext.Add(obj);
                 _appDbContext.SaveChanges();
+                var options = new Stripe.CouponCreateOptions
+                {
+                    AmountOff = (long)(couponDto.DiscountAmount * 100),
+                    Name = couponDto.CouponCode,
+                    Currency = "usd",
+                    Id = couponDto.CouponCode,
+                };
+                var service = new Stripe.CouponService();
+                service.Create(options);
                 _response.Result = _mapper.Map<CouponDto>(obj);
             }
             catch (Exception ex)
@@ -116,6 +125,8 @@ namespace Store.Services.CouponAPI.Controllers
                 Coupon obj = _appDbContext.Coupons.First(u => u.CouponId == id);
                 _appDbContext.Remove(obj);
                 _appDbContext.SaveChanges();
+                var service = new Stripe.CouponService();
+                service.Delete(obj.CouponCode);
             }
             catch (Exception ex)
             {
